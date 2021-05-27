@@ -1,0 +1,29 @@
+
+baidu_default_header: &baidu_default_header |
+  Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+  Accept-Encoding: gzip, deflate, br
+  Accept-Language: zh-CN,zh;q=0.9
+  Cache-Control: max-age=0
+  Connection: keep-alive
+  Host: www.baidu.com
+  Upgrade-Insecure-Requests: 1
+  User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36
+
+
+sogou_default_header: &sogou_default_header |
+  Accept: */*
+  Accept-Encoding: gzip, deflate, br
+  Accept-Language: zh-CN,zh;q=0.9
+  Connection: keep-alive
+  Host: www.sogou.com
+  Referer: https://www.sogou.com/?w=01029901
+  Sec-Fetch-Dest: empty
+  Sec-Fetch-Mode: cors
+  Sec-Fetch-Site: same-origin
+  User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36
+  X-Requested-With: XMLHttpRequest
+
+
+default_headers:
+  baidu: *baidu_default_header
+  sogou: *sogou_default_header
