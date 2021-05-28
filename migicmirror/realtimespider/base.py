@@ -107,6 +107,8 @@ class BaseApi(object):
                     description[i] = re.sub(r"\s", "", desc, flags=re.M | re.A)
                 _all_description.append(description)
             all_description = _all_description
+            if not all_description:
+                all_description = [[""]]
 
             for i, _ in enumerate(result):
                 result[i] = re.sub(r"\s", "", result[i], flags=re.M | re.A)
