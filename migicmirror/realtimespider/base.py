@@ -77,7 +77,7 @@ class BaseApi(object):
     def preprocess(self):
         raise NotImplemented()
 
-    def process(self):
+        def process(self):
         response = self.response()
         ret = {}
         if not len(response):
@@ -95,15 +95,28 @@ class BaseApi(object):
                 if not description:
                     continue
                 all_description.append(description)
+
+            if isinstance(result, str):
+                result = [result]
+
+            _all_description = []
+            for description in all_description:
+                if isinstance(description, str):
+                    description = [description]
+                for i, desc in enumerate(description):
+                    description[i] = re.sub(r"\s", "", desc, flags=re.M | re.A)
+                _all_description.append(description)
+            all_description = _all_description
+
+            for i, _ in enumerate(result):
+                result[i] = re.sub(r"\s", "", result[i], flags=re.M | re.A)
+
             if save == "first":
-                result = result[0].strip().strip(",").strip()
-                description = "".join([obj[0].strip() for obj in all_description])
-                description = description.strip().strip(",").strip().strip("，")
+                result = result[0]
+                description = all_description[0][0]
             else:
-                result = "".join([obj.strip() for obj in result])
-                description = "".join([", ".join([o.strip() for o in obj]) for obj in all_description])
-                result = result.strip().strip(",").strip("，")
-                description = description.strip().strip(",").strip("，")
+                result = ", ".join(result)
+                description = ", ".join([obj for description in all_description for obj in description ])
 
             ret["result"] = result
             ret["desc"] = description
