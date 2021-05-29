@@ -33,9 +33,10 @@ class User(Model, ModelMixin, ModelDateMixin, ModelDeleteMixin):
 
     role_id = Column(Integer, ForeignKey("mm_role.id", ondelete="CASCADE"))
 
-    def __init__(self, name: str, phone: str, email: str, is_activate: bool = False,
+    def __init__(self, name: str, password: str, phone: str, email: str, is_activate: bool = False,
                  login_num: int = 0, login_fail_num: int = 0):
         self.name = name
+        self.password = password
         self.phone = phone
         self.email = email
         self.is_activate = is_activate
