@@ -80,7 +80,7 @@ class BaseApi(object):
         def process(self):
         response = self.response()
         ret = {}
-        if not len(response):
+        if response is None or not len(response):
             return
         for need in self._regex:
             result_regex      = need.retregex
