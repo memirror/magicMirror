@@ -25,8 +25,8 @@ class BaiduApi(BaseApi):
 
     def preprocess(self):
         # 百度图谱
-        self.register("//div[@class='op_exactqa_s_answer']/a/text()",
-                      "//p[@class='op_exactqa_s_abstract c-gap-top-small']/span/text()",
+        self.register("string(//div[@class='op_exactqa_s_answer c-color-t'])",
+                      "string(//p[@class='op_exactqa_s_abstract'])",
                       weight=100,
                       save="all",
                       )
@@ -72,3 +72,4 @@ class BaiduApi(BaseApi):
                       save="first")
 
         return self
+     
