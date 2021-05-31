@@ -3,20 +3,18 @@
 # @Date  : 2021/5/29
 
 from sqlalchemy import Column
-from sqlalchemy import ForeignKey
-from sqlalchemy import String, Integer, DateTime, Boolean
+from sqlalchemy import String
 from sqlalchemy.orm import relationship
 
 from . import Model, ModelMixin, ModelDeleteMixin, ModelDateMixin
-from .middletable import mm_question_tag
 
 
 class Tag(Model, ModelMixin, ModelDeleteMixin, ModelDateMixin):
 
-    __tablename__ = "mm_tag"
-
-    id = Column(Integer, primary_key=True)
-    tag = Column(String(64), nullable=False, index=True)
+    tag = Column(String(64), primary_key=True)
+    questions = relationship(
+        "Question", secondary="mm_question_tag", back_populates="tags",
+    )
 
     def __init__(self, tag: str):
         self.tag = tag
