@@ -16,9 +16,10 @@ class Record(Model, ModelMixin, ModelDateMixin):
     answer = Column(Text)
     source = Column(String(64))
 
-    def __init__(self, question: str, answer: str, source: str):
+    def __init__(self, question: str, answer: str, source: str, username: str = "anonymous"):
         self.question = question
         self.answer = answer
+        self.username = username
         self.source = source
 
     def __str__(self):
