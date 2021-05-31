@@ -3,18 +3,15 @@
 # @Date  : 2021/5/29
 
 from sqlalchemy import Column
-from sqlalchemy import ForeignKey
-from sqlalchemy import String, Integer, DateTime, Boolean, Text
+from sqlalchemy import String, Integer, Text
 
-from . import Model, ModelMixin, ModelDeleteMixin, ModelDateMixin
-from .middletable import mm_question_tag
+from . import Model, ModelMixin, ModelDateMixin
 
 
 class Record(Model, ModelMixin, ModelDateMixin):
 
-    __tablename__ = "mm_record"
-
     id = Column(Integer, primary_key=True)
+    username = Column(String(64), default="anonymous")
     question = Column(String(512), index=True)
     answer = Column(Text)
     source = Column(String(64))
