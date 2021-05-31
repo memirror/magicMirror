@@ -3,19 +3,19 @@
 # @Date  : 2021/5/29
 
 from sqlalchemy import Column
-from sqlalchemy import ForeignKey
-from sqlalchemy import String, Integer, DateTime
-from sqlalchemy_utils.types import UUIDType
+from sqlalchemy import String
+from sqlalchemy.orm import relationship
 
 from . import Model, ModelMixin, ModelDateMixin, ModelDeleteMixin
+from .middletable import mm_role_permission
+
 
 class Role(Model, ModelMixin, ModelDateMixin, ModelDeleteMixin):
 
-    __tablename__ = "mm_role"
-
-    id = Column(Integer, primary_key=True)
-    role = Column(String(32), unique=True, nullable=True, index=True)
-    permission_id = Column(Integer, ForeignKey("mm_permission.id"))
+    role = Column(String(64), primary_key=True)
+    permissions = relationship(
+        "Permission", secondary=mm_role_permission, back_populates="roles",
+    )
 
     def __init__(self, role: str):
         self.role = role
