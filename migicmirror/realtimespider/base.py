@@ -77,7 +77,7 @@ class BaseApi(object):
     def preprocess(self):
         raise NotImplemented()
 
-        def process(self):
+    def process(self):
         response = self.response()
         ret = {}
         if response is None or not len(response):
