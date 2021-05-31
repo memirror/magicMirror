@@ -3,12 +3,10 @@
 # @Date  : 2021/5/29
 
 import uuid
-import hashlib
 
 from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy import String, Integer, DateTime, Boolean
-from sqlalchemy_utils.types import UUIDType
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import Model, ModelMixin, ModelDateMixin, ModelDeleteMixin
@@ -16,10 +14,7 @@ from . import Model, ModelMixin, ModelDateMixin, ModelDeleteMixin
 
 class User(Model, ModelMixin, ModelDateMixin, ModelDeleteMixin):
 
-    __tablename__ = "mm_user"
-
-    id = Column(UUIDType(binary=False), primary_key=True, default=uuid.uuid4)
-    name = Column(String(128), nullable=False, index=True)
+    name = Column(String(64), primary_key=True)
     phone = Column(String(32), unique=True, index=True)
     email = Column(String(64), unique=True, index=True)
     password_hash = Column(String(128))
@@ -31,7 +26,7 @@ class User(Model, ModelMixin, ModelDateMixin, ModelDeleteMixin):
     last_login_attempt = Column(DateTime)
     last_login_date = Column(DateTime)
 
-    role_id = Column(Integer, ForeignKey("mm_role.id", ondelete="CASCADE"))
+    role = Column(String(64), ForeignKey("mm_role.role", ondelete="CASCADE"))
 
     def __init__(self, name: str, password: str, phone: str, email: str, is_activate: bool = False,
                  login_num: int = 0, login_fail_num: int = 0):
