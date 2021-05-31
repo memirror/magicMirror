@@ -2,18 +2,19 @@
 # @Author: xiaodong
 # @Date  : 2021/5/29
 
-import enum
 import uuid
 
 from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.event.api import listens_for
 from sqlalchemy import String, Integer, BIGINT
 from sqlalchemy_utils.types import UUIDType, ChoiceType
 
 from ..choices import ActionStatus, CheckStatus
 from . import Model, ModelMixin, ModelDateMixin, ModelDeleteMixin
 from .middletable import mm_question_question, mm_question_tag
+from ...whooshe import qw
 
 
 class Question(Model, ModelMixin, ModelDateMixin, ModelDeleteMixin):
@@ -43,3 +44,13 @@ class Question(Model, ModelMixin, ModelDateMixin, ModelDeleteMixin):
 
     def __str__(self):
         return self.question
+
+
+@listens_for(Question, "after_insert")
+def insert2whoosh(mapper, connection, target):
+    qw.write_obj(keyword=target.question, id=target.id)
+
+
+@listens_for(Question, "after_delete")
+def deletefromwhoosh(mapper, connection, target):
+    qw.delete_obj(keyword=target.question)
