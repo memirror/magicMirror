@@ -5,11 +5,10 @@
 from collections import ChainMap
 from configparser import ConfigParser, ExtendedInterpolation
 import os
-from pathlib import Path
 
 import yaml
 
-from .root import root
+from magicmirror.root import root
 
 configdir = root.joinpath("magicmirror/config")
 
@@ -24,9 +23,16 @@ class cp:
 
 
 class yp:
-    _path = configdir.joinpath("realtimesearch.yaml")
-    with open(_path, encoding="utf-8") as file:
-        p = yaml.load(file, Loader=yaml.SafeLoader)
+
+    ps = []
+    paths = os.listdir(configdir)
+    for path in paths:
+        if not path.endswith(("yaml", "yml")):
+            continue
+        path = configdir.joinpath(path)
+        with open(path, encoding="utf-8") as file:
+            ps.append(yaml.load(file, Loader=yaml.SafeLoader))
+    p = ChainMap(*ps)
 
 
 class s:
@@ -36,3 +42,6 @@ class s:
 DB_MYSQL_URL = s.p["mysql.sqlalchemy"]["url"]
 BAIDU_DEFAULT_HEADERS = s.p["default_headers"]["baidu"]
 SOGOU_DEFAULT_HEADERS = s.p["default_headers"]["sogou"]
+DB_URL = DB_MYSQL_URL
+
+ELASTICSEARCH_HOST = s.p["elasticsearch"]["host"]
