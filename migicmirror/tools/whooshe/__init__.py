@@ -4,4 +4,4 @@
 
 from .question import QuestionWhoosh
 
-qw = QuestionWhoosh()
+wq = QuestionWhoosh()
