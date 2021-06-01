@@ -47,10 +47,19 @@ class Question(Model, ModelMixin, ModelDateMixin, ModelDeleteMixin):
 
 
 @listens_for(Question, "after_insert")
-def insert2whoosh(mapper, connection, target):
+def insert_to_whoosh(mapper, connection, target):
     qw.write_obj(keyword=target.question, id=target.id)
 
 
 @listens_for(Question, "after_delete")
-def deletefromwhoosh(mapper, connection, target):
+def delete_from_whoosh(mapper, connection, target):
     qw.delete_obj(keyword=target.question)
+
+
+@listens_for(Question, "after_update")
+def delete_or_insert_whoosh(mapper, connection, target):
+    if target.is_delete:
+        qw.delete_obj(keyword=target.question)
+    else:
+        qw.write_obj(keyword=target.question, id=target.id)
+  
