@@ -2,7 +2,6 @@
 # @Author: xiaodong
 # @Date  : 2021/5/27
 
-
 import logging
 
 from sqlalchemy_utils import create_database, database_exists, drop_database
@@ -21,13 +20,13 @@ logger = logging.getLogger("magicmirror.db")
 
 class BuildDatabase(object):
 
-    _force_dabase_rebuild: bool = False
+    _force_database_rebuild: bool = False
     _force_tables_rebuild: bool = False
 
     def create_database(self) -> None:
         is_create_db = True
         if database_exists(engine.url):
-            if self._force_dabase_rebuild:
+            if self._force_database_rebuild:
                 logger.warning("database <%s> exists and will be droped to rebuild", engine.url.database)
                 drop_database(engine.url)
             else:
@@ -73,4 +72,4 @@ class BuildDatabase(object):
         u = self.create_user()
         u.role = role_admin
         u.save()
-
+  
