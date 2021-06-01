@@ -14,7 +14,7 @@ from sqlalchemy_utils.types import UUIDType, ChoiceType
 from ..choices import ActionStatus, CheckStatus
 from . import Model, ModelMixin, ModelDateMixin, ModelDeleteMixin
 from .middletable import mm_question_question, mm_question_tag
-from ...whooshe import qw
+from ...whooshe import wq
 
 
 class Question(Model, ModelMixin, ModelDateMixin, ModelDeleteMixin):
@@ -45,21 +45,32 @@ class Question(Model, ModelMixin, ModelDateMixin, ModelDeleteMixin):
     def __str__(self):
         return self.question
 
+    def to_dict(self):
+        origin = super().to_dict()
+        new = origin.copy()
+        new["action"] = origin["action"].name
+        new["status"] = origin["status"].name
+        new["uid"] = origin["uid"].hex
+        for date in ("create_date", "update_date", "delete_date"):
+            datavalue = origin[date]
+            if datavalue:
+                new[date] = str(datavalue)
+        return new
+
 
 @listens_for(Question, "after_insert")
 def insert_to_whoosh(mapper, connection, target):
-    qw.write_obj(keyword=target.question, id=target.id)
+    wq.write_obj(keyword=target.question, id=target.id)
 
 
 @listens_for(Question, "after_delete")
 def delete_from_whoosh(mapper, connection, target):
-    qw.delete_obj(keyword=target.question)
+    wq.delete_obj(keyword=target.question)
 
 
 @listens_for(Question, "after_update")
 def delete_or_insert_whoosh(mapper, connection, target):
     if target.is_delete:
-        qw.delete_obj(keyword=target.question)
+        wq.delete_obj(keyword=target.question)
     else:
-        qw.write_obj(keyword=target.question, id=target.id)
-  
+        wq.write_obj(keyword=target.question, id=target.id)
