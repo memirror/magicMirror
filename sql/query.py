@@ -26,4 +26,12 @@ question_with_most_answer = (
     .order_by(text("count(1) desc"))
     .first()
 )
-  
+
+subquery = (
+    _session.query(Question)
+    .with_entities(
+        Question.question, Question.create_by, Question.create_date,
+        func.row_number().over(partition_by=Question.create_by, order_by=Question.create_date.desc()).label("rk"))
+    .subquery()
+)
+user_recent_create_detail = _session.query(subquery).filter(subquery.c.rk == 1).first()
