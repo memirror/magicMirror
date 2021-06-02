@@ -46,6 +46,9 @@ class WhooshBase(object):
     def preprocess(self, force_rebuild: bool) -> NoReturn:
         self._mkdir(force_rebuild)
 
+    def clear(self):
+        self._mkdir(force_rebuild=True)
+
     def __init__(self, force_rebuild: bool = False):
 
         self.preprocess(force_rebuild)
