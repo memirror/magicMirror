@@ -57,4 +57,6 @@ def register(api: callable, source: str, weight, **kwargs):
 register(lambda q: BaiduApi(q)(), "baidu", 900)
 register(lambda q: SogouApi(q)(), "sogou", 800)
 register(qwsearch, "whoosh", 1000)
-register(qessearch, "elasticsearch", 2000)
+
+if esq.ping():
+    register(qessearch, "elasticsearch", 2000)
