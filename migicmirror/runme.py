@@ -8,6 +8,7 @@ import click
 
 from magicmirror import Apis
 from magicmirror.tools.router import RouterByWeight
+from magicmirror.tools.db import Record
 from magicmirror.tools.limit.calllimit import LimitExecuteDuration
 
 
@@ -37,8 +38,12 @@ def magicmirror():
         if question in {"q", "quit"}:
             break
         ret = LimitExecuteDuration(1).run(mm, question)._result
+        record = Record(question=question, answer="", source="")
         if ret:
             logger.info("[from] %s", ret["source"])
+            record.source = ret["source"]
+            record.answer = ret["out"]
+            record.save()
             print(ret["out"])
         else:
             print("sorry, i donot know either")
@@ -51,4 +56,3 @@ main = magicmirror
 if __name__ == '__main__':
 
     magicmirror()
- 
