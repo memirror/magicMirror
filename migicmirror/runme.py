@@ -43,10 +43,10 @@ def magicmirror():
             logger.info("[from] %s", ret["source"])
             record.source = ret["source"]
             record.answer = ret["out"]
-            record.save()
             print(ret["out"])
         else:
             print("sorry, i donot know either")
+        record.save()
         question = input("what do you want to know?")
 
 
