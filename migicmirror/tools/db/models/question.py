@@ -7,14 +7,14 @@ import uuid
 from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.event.api import listens_for
+from sqlalchemy.event import listens_for
 from sqlalchemy import String, Integer, BIGINT
 from sqlalchemy_utils.types import UUIDType, ChoiceType
 
 from ..choices import ActionStatus, CheckStatus
 from . import Model, ModelMixin, ModelDateMixin, ModelDeleteMixin
 from .middletable import mm_question_question, mm_question_tag
-from ...whooshe import wq
+from ...signal import signal_delete_question, signal_insert_question
 
 
 class Question(Model, ModelMixin, ModelDateMixin, ModelDeleteMixin):
@@ -59,18 +59,18 @@ class Question(Model, ModelMixin, ModelDateMixin, ModelDeleteMixin):
 
 
 @listens_for(Question, "after_insert")
-def insert_to_whoosh(mapper, connection, target):
-    wq.write_obj(keyword=target.question, id=target.id)
+def _(mapper, connection, target):
+    signal_insert_question.send(target)
 
 
 @listens_for(Question, "after_delete")
-def delete_from_whoosh(mapper, connection, target):
-    wq.delete_obj(keyword=target.question)
+def _(mapper, connection, target):
+    signal_delete_question.send(target)
 
 
 @listens_for(Question, "after_update")
-def delete_or_insert_whoosh(mapper, connection, target):
+def _(mapper, connection, target):
     if target.is_delete:
-        wq.delete_obj(keyword=target.question)
+        signal_delete_question.send(target)
     else:
-        wq.write_obj(keyword=target.question, id=target.id)
+        signal_insert_question.send(target)
