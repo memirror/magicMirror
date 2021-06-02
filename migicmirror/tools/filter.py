@@ -35,7 +35,7 @@ class NoFilter(Filter):
 
 class SimpleFilter(Filter):
 
-    strategy: Strategy = Strategy.strict
+    strategy: Strategy = Strategy.loose
     callbacks: List[Callable[[str, str], float]] = [lambda oq, sq: 100.0]
     threshold: float = 80.0
 
@@ -50,4 +50,4 @@ class SimpleFilter(Filter):
             else:
                 if self.strategy.value == "loose":
                     return False
-        return False
+        return True
