@@ -8,7 +8,7 @@ import click
 
 from magicmirror import Apis
 from magicmirror.tools.router import RouterByWeight
-from magicmirror.tools.limit import LimitExecuteDuration
+from magicmirror.tools.limit.calllimit import LimitExecuteDuration
 
 
 logging.basicConfig(format="[%(asctime)s] [%(levelname)s] %(message)s")
@@ -51,3 +51,4 @@ main = magicmirror
 if __name__ == '__main__':
 
     magicmirror()
+ 
