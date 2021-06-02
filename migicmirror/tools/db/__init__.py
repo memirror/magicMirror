@@ -15,6 +15,7 @@ from .models.answer import Answer
 from .models.tag import Tag
 from .models.record import Record
 from .models import _session, engine
+from .. import event
 
 logger = logging.getLogger("magicmirror.db")
 
@@ -72,4 +73,6 @@ class BuildDatabase(object):
         u = self.create_user()
         u.role = role_admin
         u.save()
-  
+
+
+del event, logging
