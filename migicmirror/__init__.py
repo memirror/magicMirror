@@ -18,7 +18,7 @@ Api: Callable[[str], str] = None
 Apis: List[tuple] = []
 ApiDict: Dict[str, Api] = {}
 
-logger = logging.getLogger("magicmirror.realtimespider")
+logger = logging.getLogger("magicmirror")
 
 
 SimpleFilter.callbacks = [
