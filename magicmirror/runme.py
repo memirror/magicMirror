@@ -15,7 +15,6 @@ from magicmirror.tools.cache import SimpleCache
 
 logging.basicConfig(format="[%(asctime)s] [%(levelname)s] %(message)s")
 logger = logging.getLogger("magicmirror")
-logger.setLevel(logging.DEBUG)
 
 router = RouterByWeight
 router.apis = Apis
@@ -47,7 +46,13 @@ def mm(question):
 
 
 @click.command()
-def magicmirror():
+@click.option(
+    "--loglevel", "-l",
+    default="warn", required=False, type=str,
+    help="logging level",
+)
+def magicmirror(loglevel):
+    logger.setLevel(getattr(logging, loglevel.upper()))
     question = input("what do you want to know?[q|quit to exit]")
     while True:
         if question in {"q", "quit"}:
