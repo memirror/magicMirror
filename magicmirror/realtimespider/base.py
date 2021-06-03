@@ -2,7 +2,7 @@
 # @Author: xiaodong
 # @Date  : 2021/5/27
 
-from abc import ABC
+import re
 from bisect import insort
 from operator import itemgetter
 from typing import Union
@@ -69,7 +69,6 @@ class BaseApi(object):
             headers=self.get("headers"),
             cookies=self.get("cookies"),
             timeout=self.get("timeout") or self._default_timeout,
-            proxies=self.get("proxies"),
         )
         if response.status_code == 200:
             return HTML(response.text)
@@ -123,7 +122,7 @@ class BaseApi(object):
             ret["result"] = result
             ret["desc"] = description
 
-            return ret
+            return "\n".join([ret["result"], ret["desc"]]) if ret["desc"] else ret["result"]
 
     def register(self,
                  result_regex: str,
