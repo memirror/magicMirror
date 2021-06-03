@@ -2,6 +2,8 @@
 # @Author: xiaodong
 # @Date  : 2021/6/2
 
+import os
+
 from ..whooshe import wq
 from ..es import esq
 from ..signal import signal_insert_question, signal_delete_question
@@ -14,7 +16,7 @@ def insert_to_whoosh(target):
 
 @signal_insert_question.connect
 def insert_to_elasticsearch(target):
-    if not esq.ping():
+    if os.environ.get("MM_ELASTICSEARCH_SUPPORT", "true") != "true" or not esq.ping():
         return
     esq.insert(body={
         k: getattr(target, k)
@@ -29,6 +31,6 @@ def delete_from_whoosh(target):
 
 @signal_delete_question.connect
 def delete_from_elasticsearch(target):
-    if not esq.ping():
+    if os.environ.get("MM_ELASTICSEARCH_SUPPORT", "true") != "true" or not esq.ping():
         return
     esq.delete_by_question_id(target.id)
