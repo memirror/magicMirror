@@ -10,6 +10,7 @@ from magicmirror import Apis
 from magicmirror.tools.router import RouterByWeight
 from magicmirror.tools.db import Record
 from magicmirror.tools.limit.calllimit import LimitExecuteDuration
+from magicmirror.tools.cache import SimpleCache
 
 
 logging.basicConfig(format="[%(asctime)s] [%(levelname)s] %(message)s")
@@ -18,9 +19,21 @@ logger.setLevel(logging.DEBUG)
 
 router = RouterByWeight
 router.apis = Apis
+cache = SimpleCache(threshold=300, default_timeout=10)
+
+
+def makeprefix(q):
+    return "mm:question:{}".format(q)
 
 
 def mm(question):
+
+    nq = makeprefix(question)
+    out = mm.cache.get(nq)
+    if out:
+        logger.info("[cache] [real source] %s", out["source"])
+        return {"out": out["out"], "source": "cache " + out["source"]}
+
     for detail in router().process():
         api = detail["api"]
         source = detail["source"]
@@ -28,7 +41,9 @@ def mm(question):
             raise
         out = api(question)
         if out:
-            return {"out": out, "source": source}
+            ret = {"out": out, "source": source}
+            mm.cache.set(nq, ret)
+            return ret
 
 
 @click.command()
@@ -37,7 +52,7 @@ def magicmirror():
     while True:
         if question in {"q", "quit"}:
             break
-        ret = LimitExecuteDuration(1).run(mm, question)._result
+        ret = LimitExecuteDuration(5).run(mm, question)._result
         record = Record(question=question, answer="", source="")
         if ret:
             logger.info("[from] %s", ret["source"])
@@ -50,6 +65,7 @@ def magicmirror():
         question = input("what do you want to know?")
 
 
+mm.cache = cache
 main = magicmirror
 
 
