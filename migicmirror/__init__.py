@@ -2,7 +2,9 @@
 # @Author: xiaodong
 # @Date  : 2021/5/27
 
+import os
 import logging
+import random
 from typing import List, Dict, Any, Callable, Union
 from bisect import insort
 
@@ -26,20 +28,24 @@ SimpleFilter.callbacks = [
 ]
 
 
+def random_answer_by_question_id(question_id):
+    answers = Answer.query.filter_by(question_id=question_id).all()
+    answers = set([answer.answer for answer in answers])
+    return random.choice(list(answers))
+
+
 def qwsearch(question: str) -> Union[str]:
     for obj in wq.search(question):
         if SimpleFilter(question, obj["question"]).will_drop():
             continue
-        answer = Answer.query.filter_by(question_id=obj["id"]).first()
-        return answer.answer if answer else None
+        return random_answer_by_question_id(obj["id"])
 
 
 def qessearch(question: str) -> Union[str]:
     for obj in esq.search(question):
         if SimpleFilter(question, obj["question"]).will_drop():
             continue
-        answer = Answer.query.filter_by(question_id=obj["id"]).first()
-        return answer.answer if answer else None
+        return random_answer_by_question_id(obj["id"])
 
 
 class p(tuple):
@@ -58,5 +64,7 @@ register(lambda q: BaiduApi(q)(), "baidu", 900)
 register(lambda q: SogouApi(q)(), "sogou", 800)
 register(qwsearch, "whoosh", 1000)
 
-if esq.ping():
+if os.environ.get("MM_ELASTICSEARCH_SUPPORT", "true") == "true" and esq.ping():
     register(qessearch, "elasticsearch", 2000)
+else:
+    os.environ["MM_ELASTICSEARCH_SUPPORT"] = "false"
