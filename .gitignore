@@ -5,6 +5,11 @@ __pycache__/
 
 whoosh/
 bak/
+.idea/
+venv/
+whooshe/
+
+
 
 
 # Distribution / packaging
