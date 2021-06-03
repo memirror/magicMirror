@@ -42,12 +42,12 @@ class SimpleFilter(Filter):
     def will_drop(self) -> bool:
         for callback in self.callbacks:
             ratio = callback(self.oq, self.sq)
-            logger.info("[oq] %s, [sq] %s, [similary ratio] %s, [threshold] %s",
-                        self.oq, self.sq, ratio, self.threshold)
+            logger.info("[oq] %s, [sq] %s, [similary ratio] %s, [threshold] %s, [rule] %s",
+                        self.oq, self.sq, ratio, self.threshold, callback.__name__)
             if ratio < self.threshold:
                 if self.strategy.value == "strict":
                     return True
             else:
                 if self.strategy.value == "loose":
                     return False
-        return True
+        return True if self.strategy.value == "loose" else False
