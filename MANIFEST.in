@@ -1,0 +1,16 @@
+
+include __main__.py
+
+graft migration
+graft magicmirror
+
+prune web
+
+
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude *.toc
+global-exclude *.seg
+global-exclude *.LOCK
+
+
