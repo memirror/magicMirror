@@ -30,6 +30,11 @@ python script/start.py
 ```cmd
 
 python magicMirror
+
+or
+
+# pip install 完毕后
+magicmirror    
 ```   
 
 
