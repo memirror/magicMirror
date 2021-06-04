@@ -12,6 +12,8 @@
 ```cmd
 git clone https://github.com/memirror/magicMirror.git
 
+cd magicMirror
+
 python setup.py sdist
 pip install -e .
 ```
@@ -33,4 +35,6 @@ python magicMirror
 
 ### 展示效果
 ![mm_qa](assets/pic/mm_qa.png)
+
+![mm_qa](assets/pic/mm_start.png)
 ![mm_qa](assets/pic/mm_qa_hide_log_info.png)
