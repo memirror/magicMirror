@@ -8,12 +8,19 @@
 
 魔镜魔镜，无所不知的魔镜[-_-] //并不是
 
+### 安装
+```cmd
+git clone https://github.com/memirror/magicMirror.git
+
+python setup.py sdist
+pip install -e .
+```
+
 
 ### 初始化数据
 
 ```cmd
 
-pip install -r requirements/base.txt          
 python script/start.py
 ```
 
@@ -26,3 +33,4 @@ python magicMirror
 
 ### 展示效果
 ![mm_qa](assets/pic/mm_qa.png)
+![mm_qa](assets/pic/mm_qa_hide_log_info.png)
