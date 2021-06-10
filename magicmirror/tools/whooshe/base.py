@@ -8,7 +8,7 @@ import shutil
 from typing import Any, NoReturn, Generator
 
 from jieba.analyse import ChineseAnalyzer
-from whoosh import qparser
+from whoosh import qparser, scoring
 from whoosh.qparser import QueryParser
 from whoosh.fields import Schema, TEXT, NUMERIC
 from whoosh.index import create_in, open_dir
@@ -68,7 +68,7 @@ class WhooshBase(object):
 
     def search(self, keyword: str, topk: int = 5) -> Generator:
         q = self.parse(keyword)
-        with self.ix.searcher() as searcher:
+        with self.ix.searcher(weighting=scoring.TF_IDF()) as searcher:
             hits = searcher.search(q, limit=topk)
         return hits
 
