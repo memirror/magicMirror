@@ -7,10 +7,11 @@ import logging
 import shutil
 from typing import Any, NoReturn, Generator
 
+from jieba.analyse import ChineseAnalyzer
+from whoosh import qparser
+from whoosh.qparser import QueryParser
 from whoosh.fields import Schema, TEXT, NUMERIC
 from whoosh.index import create_in, open_dir
-from whoosh.qparser import QueryParser
-from jieba.analyse import ChineseAnalyzer
 
 from ...root import root
 
@@ -48,13 +49,22 @@ class WhooshBase(object):
 
     def clear(self):
         self._mkdir(force_rebuild=True)
+    
+    def parse(self, keyword: str):
+        parser = QueryParser("keyword", schema=self.ix.schema)
+        parser.add_plugins(
+            [
+                qparser.RegexPlugin(),
+                qparser.FuzzyTermPlugin()
+            ]
+        )
+        return parser.parse(f"keyword:{keyword}~1/10")
 
     def __init__(self, force_rebuild: bool = False):
 
         self.preprocess(force_rebuild)
 
         self.ix = open_dir(self.index_dir, self.index_name)
-        self.parse = QueryParser("keyword", schema=self.ix.schema).parse
 
     def search(self, keyword: str, topk: int = 5) -> Generator:
         q = self.parse(keyword)
